@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Event Management</title>
+    <script>
+        async function fetchEvents() {
+            const response = await fetch('http://localhost:3000/api/events');
+            const events = await response.json();
+            const eventList = document.getElementById('eventList');
+            eventList.innerHTML = '';
+            events.forEach(event => {
+                const item = document.createElement('li');
+                item.textContent = `${event.title} - ${event.date} - ${event.location}`;
+                eventList.appendChild(item);
+            });
+        }
+
+        async function addEvent() {
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const date = document.getElementById('date').value;
+            const location = document.getElementById('location').value;
+
+            await fetch('http://localhost:3000/api/events', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ title, description, date, location })
+            });
+
+            fetchEvents();
+        }
+    </script>
+</head>
+<body onload="fetchEvents()">
+    <h1>Event Management</h1>
+    <h3>Add Event</h3>
+    <input type="text" id="title" placeholder="Title">
+    <input type="text" id="description" placeholder="Description">
+    <input type="date" id="date">
+    <input type="text" id="location" placeholder="Location">
+    <button onclick="addEvent()">Add Event</button>
+
+    <h3>Event List</h3>
+    <ul id="eventList"></ul>
+</body>
+</html>
